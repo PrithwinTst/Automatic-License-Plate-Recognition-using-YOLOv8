@@ -2,7 +2,7 @@ from ultralytics import YOLO
 import cv2
 
 import util
-from sort.sort import *
+from sort import *
 from util import get_car, read_license_plate, write_csv
 
 
@@ -15,7 +15,7 @@ coco_model = YOLO('yolov8n.pt')
 license_plate_detector = YOLO('license_plate_detector.pt')
 
 # load video
-cap = cv2.VideoCapture('./sample.mp4')
+cap = cv2.VideoCapture('demo.mp4')
 
 vehicles = [2, 3, 5, 7]
 
@@ -51,10 +51,13 @@ while ret:
                 # crop license plate
                 license_plate_crop = frame[int(y1):int(y2), int(x1): int(x2), :]
 
+                cv2.imwrite("license_plate_crop.png", license_plate_crop)
+
                 # process license plate
                 license_plate_crop_gray = cv2.cvtColor(license_plate_crop, cv2.COLOR_BGR2GRAY)
                 _, license_plate_crop_thresh = cv2.threshold(license_plate_crop_gray, 64, 255, cv2.THRESH_BINARY_INV)
-
+                
+                
                 # read license plate number
                 license_plate_text, license_plate_text_score = read_license_plate(license_plate_crop_thresh)
 
